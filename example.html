@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de Ejemplo</title>
+    <style>
+        /* Asegurar que el contenido se ajuste al ancho del papel de ticket */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            width: 58mm;
+            /* Cambiar a 80mm si usas ese tamaño */
+        }
+
+        .ticket {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 5px;
+        }
+
+        .footer {
+            margin-top: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ticket">
+        <div class="header">Mi Negocio</div>
+        <div class="details">
+            Fecha: 11/01/2025<br>
+            Ticket N°: 00123<br>
+            Cajero: Juan Pérez
+        </div>
+
+        <div class="items">
+            <div class="item">
+                <span>Producto A</span>
+                <span>$10.00</span>
+            </div>
+            <div class="item">
+                <span>Producto B</span>
+                <span>$15.00</span>
+            </div>
+            <div class="item">
+                <span>Producto C</span>
+                <span>$5.00</span>
+            </div>
+        </div>
+
+        <div class="total">
+            Total: $30.00
+        </div>
+
+        <div class="footer">
+            ¡Gracias por su compra!<br>
+            Visítenos en: www.mi-negocio.com
+        </div>
+    </div>
+</body>
+
+</html>

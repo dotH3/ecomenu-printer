@@ -1,5 +1,5 @@
 const express = require('express');
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const multer = require('multer');
 const app = express();
@@ -23,14 +23,49 @@ const logToFile = (message) => {
     });
 };
 
-app.post('/print', upload.single('file'), (req, res) => {
+
+const getPrinterList = async (res) => {
+    return new Promise((resolve, reject) => {
+        const command = `Get-Printer | Format-List Name`;
+
+        exec(`powershell -Command "${command}"`, (error, stdout, stderr) => {
+            if (error) {
+                console.warn(`Error al listar: ${error.message}`);
+                reject(`Error al listar las impresoras disponibles`);
+                return res.status(400).send(`Error al listar las impresoras disponibles`);
+            }
+
+            const printerArray = stdout
+                .split('\n') // Dividir la salida en líneas
+                .map(line => line.trim()) // Eliminar espacios innecesarios
+                .filter(line => line.startsWith('Name :')) // Filtrar líneas que contienen 'Name :'
+                .map(line => line.replace('Name :', '').trim()); // Remover 'Name :' y limpiar espacios
+
+            resolve(printerArray);
+        });
+    });
+};
+
+app.get('/printer-list', async (req, res) => {
+    const printerArray = await getPrinterList(res);
+    return res.status(200).json(printerArray)
+})
+
+app.post('/print', upload.single('file'), async (req, res) => {
     if (!req.file) {
         res.status(400).send('No se proporcionó ningún archivo.');
         logToFile('No se proporcionó ningún archivo.');
         return;
     }
 
-    console.log(req.file);
+    const printerName = req.body.printerName
+    const printerExist = (await getPrinterList(res)).includes(printerName)
+
+    if (!req.body.printerName | !printerExist) {
+        res.status(400).send('No se proporcionó ningún printerName valido. GET/printer-list');
+        logToFile('No se proporcionó ningún ninguna impresora valida');
+        return;
+    }
 
     const destinationPath = 'test.html';
 
@@ -56,9 +91,9 @@ app.post('/print', upload.single('file'), (req, res) => {
             }
 
             // Comando para imprimir el PDF
-            const printCommand = 'powershell -Command "Start-Process -FilePath \"test.pdf\" -Verb PrintTo -ArgumentList \"XP-58\" -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process"';
+            const printCommand = `Start-Process -FilePath 'test.pdf' -Verb PrintTo -ArgumentList '${req.body.printerName}' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process`;
 
-            exec(printCommand, (error, stdout, stderr) => {
+            exec(`powershell -Command "${printCommand}"`, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error imprimiendo el PDF: ${error.message}`);
                     res.status(500).send('Error imprimiendo el PDF');
