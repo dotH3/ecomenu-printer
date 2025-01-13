@@ -1,4 +1,6 @@
 /node_modules
+/build
+ecomenu-printer.exe
 logs.txt
 .env
 test.html

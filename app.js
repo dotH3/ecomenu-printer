@@ -1,10 +1,21 @@
+const version = 'v1.0.1'
 const express = require('express');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const multer = require('multer');
 const app = express();
+const statusIcon = require('status-icon')()
+statusIcon.set('icon.ico');
+
+
+
+
+
+
+
 
 const PORT = 8088;
+
 
 // Configuración de multer sin carpeta de destino
 const upload = multer({
@@ -47,11 +58,15 @@ const getPrinterList = async (res) => {
 };
 
 app.get('/printer-list', async (req, res) => {
+    statusIcon.progress();
     const printerArray = await getPrinterList(res);
-    return res.status(200).json(printerArray)
+    res.status(200).json(printerArray)
+    statusIcon.set('icon.ico');
+    return
 })
 
 app.post('/print', upload.single('file'), async (req, res) => {
+    statusIcon.progress();
     if (!req.file) {
         res.status(400).send('No se proporcionó ningún archivo.');
         logToFile('No se proporcionó ningún archivo.');
@@ -81,6 +96,7 @@ app.post('/print', upload.single('file'), async (req, res) => {
         console.log('Archivo guardado como test.html');
 
         // Comando para convertir test.html a test.pdf
+
         const wkhtmltopdfCommand = 'powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom 1.3 --images --page-height 210 --page-width 58  --margin-right 0 --margin-left 0 test.html test.pdf"';
 
         exec(wkhtmltopdfCommand, (error, stdout, stderr) => {
@@ -92,7 +108,6 @@ app.post('/print', upload.single('file'), async (req, res) => {
 
             // Comando para imprimir el PDF
             const printCommand = `Start-Process -FilePath 'test.pdf' -Verb PrintTo -ArgumentList '${req.body.printerName}' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process`;
-
             exec(`powershell -Command "${printCommand}"`, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error imprimiendo el PDF: ${error.message}`);
@@ -104,6 +119,7 @@ app.post('/print', upload.single('file'), async (req, res) => {
                 console.log(`PDF enviado a la impresora exitosamente size:${req.file.size}`);
                 logToFile(`PDF enviado a la impresora exitosamente size:${req.file.size}`);
                 res.send('PDF generado e impreso exitosamente');
+                statusIcon.set('icon.ico');
             });
         });
     });
@@ -117,6 +133,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor escuchando en el puerto ${PORT}`);
-    logToFile(`Servidor escuchando en el puerto ${PORT}`);
+    console.log(`Servidor escuchando en el puerto ${PORT} (${version})`);
+    logToFile(`Servidor escuchando en el puerto ${PORT} (${version})`);
 });

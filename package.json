@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "node app.js"
+    "dev": "node app.js",
+    "build": "pkg app.js --windowed --targets node18-win-x64 --output ./build/ecomenu-printer.exe"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +13,8 @@
   "dependencies": {
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "status-icon": "^1.2.0"
   }
 }
