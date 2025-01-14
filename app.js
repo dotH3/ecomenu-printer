@@ -4,16 +4,6 @@ const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const multer = require('multer');
 const app = express();
-const statusIcon = require('status-icon')()
-statusIcon.set('icon.ico');
-
-
-
-
-
-
-
-
 const PORT = 8088;
 
 
