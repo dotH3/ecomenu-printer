@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node app.js",
     "build": "pkg app.js --windowed --targets node18-win-x64 --output ./build/ecomenu-printer.exe"
-  },
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

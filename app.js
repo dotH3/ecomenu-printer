@@ -1,7 +1,9 @@
-const version = 'v1.0.1'
+const version = 'v1.0.2'
 const express = require('express');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const multer = require('multer');
 const app = express();
 const PORT = 8088;
@@ -13,6 +15,7 @@ const upload = multer({
 });
 
 const logToFile = (message) => {
+    return
     const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0]; // Formato: YYYY-MM-DD HH:MM:SS
     const logMessage = `${timestamp} - ${message}\n`;
 
@@ -48,33 +51,36 @@ const getPrinterList = async (res) => {
 };
 
 app.get('/printer-list', async (req, res) => {
-    statusIcon.progress();
     const printerArray = await getPrinterList(res);
     res.status(200).json(printerArray)
-    statusIcon.set('icon.ico');
     return
 })
 
 app.post('/print', upload.single('file'), async (req, res) => {
-    statusIcon.progress();
     if (!req.file) {
         res.status(400).send('No se proporcionó ningún archivo.');
         logToFile('No se proporcionó ningún archivo.');
         return;
     }
 
-    const printerName = req.body.printerName
-    const printerExist = (await getPrinterList(res)).includes(printerName)
+    const printerName = req.body.printerName;
+    const printerExist = (await getPrinterList(res)).includes(printerName);
 
-    if (!req.body.printerName | !printerExist) {
-        res.status(400).send('No se proporcionó ningún printerName valido. GET/printer-list');
-        logToFile('No se proporcionó ningún ninguna impresora valida');
+    if (!req.body.printerName || !printerExist) {
+        res.status(400).send('No se proporcionó ningún printerName válido. GET/printer-list');
+        logToFile('No se proporcionó ninguna impresora válida');
         return;
     }
 
-    const destinationPath = 'test.html';
+    // Utiliza el directorio temporal del sistema
+    const tempDir = path.join(os.tmpdir(), 'ecomenu-printer');
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+    }
 
-    // Guardar el archivo subido como test.html
+    const destinationPath = path.join(tempDir, 'test.html');
+
+    // Guardar el archivo subido como test.html en la carpeta temporal
     fs.writeFile(destinationPath, req.file.buffer, (err) => {
         if (err) {
             console.error(`Error guardando el archivo: ${err.message}`);
@@ -86,8 +92,7 @@ app.post('/print', upload.single('file'), async (req, res) => {
         console.log('Archivo guardado como test.html');
 
         // Comando para convertir test.html a test.pdf
-
-        const wkhtmltopdfCommand = 'powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom 1.3 --images --page-height 210 --page-width 58  --margin-right 0 --margin-left 0 test.html test.pdf"';
+        const wkhtmltopdfCommand = `powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom 1.3 --images --page-height 210 --page-width 58 --margin-right 0 --margin-left 0 ${destinationPath} ${path.join(tempDir, 'test.pdf')}"`;
 
         exec(wkhtmltopdfCommand, (error, stdout, stderr) => {
             if (error) {
@@ -97,7 +102,8 @@ app.post('/print', upload.single('file'), async (req, res) => {
             }
 
             // Comando para imprimir el PDF
-            const printCommand = `Start-Process -FilePath 'test.pdf' -Verb PrintTo -ArgumentList '${req.body.printerName}' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process`;
+            const printCommand = `Start-Process -FilePath '${path.join(tempDir, 'test.pdf')}' -Verb PrintTo -ArgumentList '${req.body.printerName}' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process`;
+
             exec(`powershell -Command "${printCommand}"`, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error imprimiendo el PDF: ${error.message}`);
@@ -109,11 +115,10 @@ app.post('/print', upload.single('file'), async (req, res) => {
                 console.log(`PDF enviado a la impresora exitosamente size:${req.file.size}`);
                 logToFile(`PDF enviado a la impresora exitosamente size:${req.file.size}`);
                 res.send('PDF generado e impreso exitosamente');
-                statusIcon.set('icon.ico');
             });
         });
     });
-});
+})
 
 // Manejador global de errores
 app.use((err, req, res, next) => {
