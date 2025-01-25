@@ -1,4 +1,4 @@
-const version = 'v1.0.3'
+const version = 'v1.0.4'
 const express = require('express');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
@@ -9,9 +9,8 @@ const { getPrinterList } = require('./src/getPrinterList');
 const app = express();
 const PORT = 8088;
 
-
 const upload = multer({
-    limits: { fileSize: 10 * 1024 * 1024 } // Límite: 10 MB
+    limits: { fileSize: 10 * 1024 * 1024 } 
 });
 
 const destinationPath = path.join(os.homedir(), 'Desktop', 'ecomenu-printer');
@@ -28,12 +27,14 @@ const logToFile = (message) => {
 }
 
 app.get('/printer-list', async (req, res) => {
+    console.log('GET /printer-list');
     const printerArray = await getPrinterList(res);
     res.status(200).json(printerArray)
     return
 })
 
 app.post('/print', upload.single('file'), async (req, res) => {
+    console.log('POST /print');
     if (!req.file) {
         res.status(400).send('No se proporcionó ningún archivo.');
         logToFile('No se proporcionó ningún archivo.');
@@ -55,8 +56,6 @@ app.post('/print', upload.single('file'), async (req, res) => {
             logToFile(`Error guardando el archivo: ${err.message}`);
             return;
         }
-        logToFile("html saved");
-        logToFile('html > pdf')
         const wkhtmltopdfCommand = `powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom 1.3 --images --page-height 210 --page-width 58 --margin-right 0 --margin-left 0 ${htmlPath} ${pdfPath}"`;
 
         exec(wkhtmltopdfCommand, (error, stdout, stderr) => {
@@ -67,10 +66,11 @@ app.post('/print', upload.single('file'), async (req, res) => {
             }
 
             // Comando para imprimir el PDF
-            logToFile('printing pdf')
-            const printCommand = `Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList '${req.body.printerName}' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process`;
+            const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList ‘”${req.body.printerName}”’ -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process"`;
 
-            exec(`powershell -Command "${printCommand}"`, (error, stdout, stderr) => {
+            console.log(printCommand)
+
+            exec(printCommand, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error imprimiendo el PDF: ${error.message}`);
                     res.status(500).send('Error imprimiendo el PDF');
