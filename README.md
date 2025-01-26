@@ -10,5 +10,5 @@
 
 
 ## Endpoint
-- **GET/printer-list** lista de impresoras configuradas en windows
-- **POST/print** imprimir html
+- **GET/printer-list** lista de impresoras configuradas en windows 
+- **POST/print** imprimir html (printerName, height, width, zoom).

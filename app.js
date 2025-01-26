@@ -1,4 +1,4 @@
-const version = 'v1.0.5'
+const version = 'v1.0.6'
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -17,6 +17,9 @@ const upload = multer({
 const destinationPath = path.join(os.homedir(), 'Desktop', 'ecomenu-printer');
 const htmlPath = path.join(destinationPath, 'file.html');
 const pdfPath = path.join(destinationPath, 'file.pdf');
+
+const esNumeroValido = (num) => typeof num === 'number' && num > 0 && /^[0-9]+(\.[0-9]{1,2})?$/.test(num);
+
 
 if (!fs.existsSync(destinationPath)) {
     console.log("Creando directorio de destino",destinationPath)
@@ -44,13 +47,18 @@ app.post('/print', upload.single('file'), async (req, res) => {
         return res.status(400).send('No se proporcionó ningún printerName válido. GET/printer-list');
     }
 
-    if(!req.body.witdh || !req.body.height){
+    if(!req.body.width || !req.body.height){
         logToFile('No se proporcionó ningún tamaño de papel válido');
         return res.status(400).send('No se proporcionó ningún tamaño de papel válido. width y height');
     }
     if(isNaN(req.body.width) || isNaN(req.body.height) || req.body.width <= 0 || req.body.height <= 0){
         logToFile('No se proporcionó ningún tamaño de papel válido');
-        return res.send('No se proporcionó ningún tamaño de papel válido. width y height');
+        return res.status(400).send('No se proporcionó ningún tamaño de papel válido. width y height');
+    }
+
+    // verificar el req.body.zoom
+    if(!req.body.zoom || esNumeroValido(req.body.zoom)){
+        return res.status(400).send('No se proporciono ningun zoom para el contenido. zoom')
     }
 
     // 
@@ -61,7 +69,7 @@ app.post('/print', upload.single('file'), async (req, res) => {
             return res.status(500).send('Error guardando el archivo');
         }
         // height: 210mm width: 58mm
-        const wkhtmltopdfCommand = `powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom 1.3 --images --page-height ${req.body.height} --page-width ${req.body.width} --margin-right 0 --margin-left 0 ${htmlPath} ${pdfPath}"`;
+        const wkhtmltopdfCommand = `powershell -Command "./wkhtmltopdf --encoding utf-8 --zoom ${req.body.zoom} --images --page-height ${req.body.height} --page-width ${req.body.width} --margin-right 0 --margin-left 0 ${htmlPath} ${pdfPath}"`;
 
         exec(wkhtmltopdfCommand, (error, stdout, stderr) => {
             if (error) {
@@ -71,8 +79,8 @@ app.post('/print', upload.single('file'), async (req, res) => {
             }
 
             // Comando para imprimir el PDF
-            const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList ‘”${req.body.printerName}”’ -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process"`;
-
+            // const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList ‘”${req.body.printerName}”’ -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process"`;
+            const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList '\\"${req.body.printerName}\\"' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process";`
             console.log(printCommand)
 
             exec(printCommand, (error, stdout, stderr) => {
