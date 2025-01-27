@@ -1,4 +1,4 @@
-const version = 'v1.0.6'
+const version = 'v1.0.7'
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -7,12 +7,18 @@ const os = require('os');
 const multer = require('multer');
 const { getPrinterList } = require('./src/getPrinterList');
 const { logToFile } = require('./src/logToFile');
+const cors = require('cors');
 const app = express();
 const PORT = 8088;
 
 const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 } 
 });
+
+const corsOptions = {
+    origin: ['https://test.ecomenuapp.com', 'https://saas.ecomenuapp.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  };
 
 const destinationPath = path.join(os.homedir(), 'Desktop', 'ecomenu-printer');
 const htmlPath = path.join(destinationPath, 'file.html');
@@ -101,6 +107,8 @@ app.use((err, req, res, next) => {
     res.status(500).send('Error interno del servidor');
     logToFile(`Error inesperado: ${err.message}`);
 });
+
+app.use(cors(corsOptions));
 
 app.listen(PORT, '0.0.0.0', () => {
     logToFile(`Servidor escuchando en el puerto ${PORT} (${version})`);
