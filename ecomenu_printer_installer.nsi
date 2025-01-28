@@ -2,7 +2,7 @@
 !define EXE_NAME "ecomenu-printer.exe"
 !define WKHTMLTOPDF "wkhtmltopdf.exe"
 !define INSTALL_DIR "$LOCALAPPDATA\ecomenu-printer"
-!define APP_VERSION "1.0.7"
+!define APP_VERSION "1.0.8"
 !define INSTALLER_NAME "setup-ecomenu-printer-v${APP_VERSION}.exe"
 
 OutFile "${INSTALLER_NAME}"
