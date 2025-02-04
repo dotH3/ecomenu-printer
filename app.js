@@ -1,4 +1,4 @@
-const version = 'v1.0.8';
+const version = 'v1.0.10';
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -101,7 +101,7 @@ app.post('/print', upload.single('file'), async (req, res) => {
 
       // Comando para imprimir el PDF
       // const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList ‘”${req.body.printerName}”’ -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process"`;
-      const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList '\\"${req.body.printerName}\\"' -PassThru | % {Start-Sleep -Seconds 10; $_} | Stop-Process";`;
+      const printCommand = `powershell -Command "Start-Process -FilePath '${pdfPath}' -Verb PrintTo -ArgumentList '\\"${req.body.printerName}\\"' -PassThru | % {Start-Sleep -Seconds 2; $_} | Stop-Process";`;
       console.log(printCommand);
 
       exec(printCommand, (error, stdout, stderr) => {
