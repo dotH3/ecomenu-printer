@@ -1,4 +1,4 @@
-const version = 'v1.0.11'
+const version = 'v1.1.0'
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
