@@ -1,8 +1,9 @@
 !define APP_NAME "ecomenu-printer"
-!define EXE_NAME "ecomenu-printer.exe"
+!define EXE_NAME "ecomenu-printer_x64.exe"
 !define WKHTMLTOPDF "wkhtmltopdf.exe"
+!define UNINSTALLER "uninstall-ecomenu-printer.exe"
 !define INSTALL_DIR "$LOCALAPPDATA\ecomenu-printer"
-!define APP_VERSION "1.0.8"
+!define APP_VERSION "1.0.11"
 !define INSTALLER_NAME "setup-ecomenu-printer-v${APP_VERSION}.exe"
 
 OutFile "${INSTALLER_NAME}"
@@ -35,6 +36,7 @@ Section "Instalar"
     SetOutPath "${INSTALL_DIR}"
     File "${EXE_NAME}"
     File "${WKHTMLTOPDF}"
+    File "${UNINSTALLER}"
     File "run_as_admin.bat"  ; Asegúrate de tener el archivo .bat en la misma carpeta que el .nsi
 
     ; Configurar el programa para que inicie con Windows

@@ -8,7 +8,7 @@ const multer = require('multer');
 const { getPrinterList } = require('./src/getPrinterList');
 const { logToFile } = require('./src/logToFile');
 const app = express();
-const PORT = 8088;
+const PORT = 3005;
 const cors = require("cors");
 
 const upload = multer({
