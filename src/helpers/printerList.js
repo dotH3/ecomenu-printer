@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 
-const getPrinterList = async (res) => {
+const printerList = async (res) => {
     return new Promise((resolve, reject) => {
         const command = `Get-Printer | Format-List Name`;
 
@@ -23,5 +23,5 @@ const getPrinterList = async (res) => {
 };
 
 module.exports = {
-    getPrinterList
+    printerList
 }
