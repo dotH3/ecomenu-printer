@@ -1,4 +1,4 @@
-const version = "v1.1.1";
+const version = "v1.1.2";
 const PORT = 3005;
 
 const express = require("express");
