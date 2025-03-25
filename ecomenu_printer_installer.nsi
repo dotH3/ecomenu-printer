@@ -5,7 +5,7 @@
 !define ICON_FILE "icon.ico"
 !define ICON_GRAY_SCALE_FILE "icon_gray_scale.ico" 
 !define INSTALL_DIR "$LOCALAPPDATA\ecomenu-printer"
-!define APP_VERSION "1.1.3"
+!define APP_VERSION "1.1.4"
 !define INSTALLER_NAME "setup-ecomenu-printer-v${APP_VERSION}.exe"
 !define WEB_URL "https://saas.ecomenuapp.com/"
 
