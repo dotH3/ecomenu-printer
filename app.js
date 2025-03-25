@@ -21,7 +21,7 @@ const destinationPath = path.join(os.homedir(), "Desktop", "ecomenu-printer");
 
 fs.rmSync(destinationPath, { recursive: true, force: true });
 
-const allowedOrigins = ["https://saas.ecomenuapp.com"];
+const allowedOrigins = ["https://saas.ecomenuapp.com", "https://test.ecomenuapp.com"];
 app.use(
   cors({
     origin: allowedOrigins,
