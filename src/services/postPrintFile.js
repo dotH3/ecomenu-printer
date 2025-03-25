@@ -4,6 +4,7 @@ const { printerList } = require("../helpers/printerList");
 const { saveHTML } = require("../helpers/saveHTML");
 const { HTMLToPDF } = require("../helpers/HTMLToPDF");
 const { printPDF } = require("../helpers/printPDF");
+const { logToFile } = require("../helpers/logToFile");
 
 const esNumeroValido = (num) =>
   typeof num === "number" && num > 0 && /^[0-9]+(\.[0-9]{1,2})?$/.test(num);
@@ -11,23 +12,28 @@ const destinationPath = path.join(os.homedir(), "Desktop", "ecomenu-printer");
 
 const postPrintFile = async (req, res) => {
   try {
+    logToFile("POST /print");
     const validation = await validarParametros(req, res);
     if (validation) {
       throw new Error(validation);
     }
 
     const htmlFile = await saveHTML(req.file.buffer);
+    logToFile(`HTML guardado exitosamente: ${htmlFile}`);
     const pdfFile = await HTMLToPDF(htmlFile, {
       zoom: req.body.zoom,
       height: req.body.height,
       width: req.body.width,
     });
+    logToFile(`PDF generado exitosamente: ${pdfFile}`);
 
     const gonnaPrint = await printPDF(pdfFile, req.body.printerName)
+    logToFile(`PDF enviado a la impresora exitosamente: ${gonnaPrint}`);
 
     return res.send({htmlFile, pdfFile});
   } catch (error) {
     console.error(error);
+    logToFile(`Error inesperado: ${error.message}`);
     res.status(400).send(error.message);
   }
   //   fs.writeFile(htmlPath, req.file.buffer, (err) => {
