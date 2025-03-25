@@ -2,9 +2,10 @@
 !define EXE_NAME "ecomenu-printer.exe"
 !define WKHTMLTOPDF "wkhtmltopdf.exe"
 !define UNINSTALLER "uninstall-ecomenu-printer.exe"
-!define ICONFILE "icon.ico"
+!define ICON_FILE "icon.ico"
+!define ICON_GRAY_SCALE_FILE "icon_gray_scale.ico" 
 !define INSTALL_DIR "$LOCALAPPDATA\ecomenu-printer"
-!define APP_VERSION "1.1.2"
+!define APP_VERSION "1.1.3"
 !define INSTALLER_NAME "setup-ecomenu-printer-v${APP_VERSION}.exe"
 !define WEB_URL "https://saas.ecomenuapp.com/"
 
@@ -28,7 +29,8 @@ Section "Instalar"
     File "${EXE_NAME}"
     File "${WKHTMLTOPDF}"
     File "${UNINSTALLER}"
-    File "${ICONFILE}"
+    File "${ICON_FILE}"
+    File "${ICON_GRAY_SCALE_FILE}"
     File "run_as_admin.bat"  ; Asegúrate de tener el archivo .bat en la misma carpeta que el .nsi
 
     ; Configurar el programa para que inicie con Windows
@@ -47,5 +49,10 @@ Section "Instalar"
 
     ; Crear acceso directo si el usuario eligió "Sí"
     CreateShortcutLabel:
-        CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$\"${INSTALL_DIR}\run_as_admin.bat$\""
+        FileOpen $0 "$DESKTOP\Ecomenu Printer.url" w
+        FileWrite $0 "[InternetShortcut]$\r$\nURL=file:///${INSTALL_DIR}/run_as_admin.bat$\r$\nIconFile=${INSTALL_DIR}\icon_gray_scale.ico$\r$\nIconIndex=0$\r$\n"
+        FileClose $0
+
+        ; CreateShortCut "$DESKTOP\Ecomenu Printer.lnk" "$\"${INSTALL_DIR}\run_as_admin.bat$\"" "$\"${INSTALL_DIR}\${ICON_GRAY_SCALE_FILE}$\"" 0
+
 SectionEnd
