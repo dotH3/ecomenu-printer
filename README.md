@@ -1,3 +1,8 @@
+> [!WARNING]  
+> **DEPRECATED**. This repository is no longer maintained.  
+> Active development has moved to [this repo](https://github.com/dotH3/ecomenu-printer-rust), which is built with **Rust**.  
+
+
 # ecomenu-printer
 
 **ecomenu-printer** es una aplicación nativa desarrollada para manejar impresoras a través de solicitudes HTTP. Diseñada específicamente para integrarse con el SaaS **Ecomenu**, permite realizar impresiones de manera eficiente y escalable en entornos Windows.
