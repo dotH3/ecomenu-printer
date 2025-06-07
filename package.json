@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "node app.js",
-    "build": "pkg app.js --windowed --targets node18-win-x64 --output ./build/ecomenu-printer.exe",
-    "build2": "pkg app.js --windowed --targets node18-win --output ./build/ecomenu-printer.exe"
+    "dev": "node index.js",
+    "build": "pkg index.js --windowed --targets node18-win-x64 --output ./build/ecomenu-printer.exe",
+    "build2": "pkg index.js --windowed --targets node18-win --output ./build/ecomenu-printer.exe"
   },
   "keywords": [],
   "author": "",

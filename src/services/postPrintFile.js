@@ -2,8 +2,9 @@ const path = require("path");
 const os = require("os");
 
 const fs = require("fs");
-const { print } = require("pdf-to-printer");
+// const { print } = require("pdf-to-printer");
 const { writeLog } = require("../misc/writeLog");
+const { print_pdf } = require("../misc/print");
 
 const destinationPath = path.join(os.homedir(), "Desktop", "ecomenu-printer");
 
@@ -24,18 +25,15 @@ const postPrintFile = async (req, res) => {
   const finalPath = path.join(destinationPath, `${path.basename(tmpPath)}.pdf`);
   fs.renameSync(tmpPath, finalPath);
 
-  writeLog(`Imprimiendo PDF (${finalPath}) en impresora "${printerName}"`);
-
   try {
-    const options = {
-      printer: printerName,
-      scale: "shrink",
-      // shrink
-      // fit
-      // noscale
-    };
-    await print(finalPath, options);
-    // await print(`./uploads/ej.pdf`, options);
+    // const options = {
+      // printer: printerName,
+      // scale: "shrink",
+      // // shrink
+      // // fit
+      // // noscale
+    // };
+    await print_pdf(printerName, finalPath);
 
     writeLog(`PDF enviado a impresión en "${printerName}"`);
     return res.json({ status: "Impresión enviada", path: finalPath });
