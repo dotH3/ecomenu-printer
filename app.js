@@ -1,4 +1,4 @@
-const version = "v1.1.4";
+const version = "v1.2.0";
 const PORT = 3005;
 
 const express = require("express");
@@ -8,20 +8,24 @@ const os = require("os");
 const path = require("path");
 const fs = require("fs");
 
-const { logToFile } = require("./src/helpers/logToFile");
 const { getPrinterList } = require("./src/services/getPrinterList");
 const { postPrintFile } = require("./src/services/postPrintFile");
 
 const multer = require("multer");
+const { writeLog } = require("./src/misc/writeLog");
+const uploadDir = path.join(os.homedir(), "Desktop", "ecomenu-printer");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
+  dest: path.join(os.homedir(), "Desktop", "ecomenu-printer"),
 });
 
-const destinationPath = path.join(os.homedir(), "Desktop", "ecomenu-printer");
-
-fs.rmSync(destinationPath, { recursive: true, force: true });
-
-const allowedOrigins = ["https://saas.ecomenuapp.com", "https://test.ecomenuapp.com"];
+const allowedOrigins = [
+  "https://saas.ecomenuapp.com",
+  "https://test.ecomenuapp.com",
+];
 app.use(
   cors({
     origin: allowedOrigins,
@@ -33,13 +37,12 @@ app.use(
 app.use(express.json());
 
 app.get("/printer-list", getPrinterList);
-app.post("/print", upload.single("file"), postPrintFile);
+app.post("/print", upload.single("pdf"), postPrintFile);
 
 app.use((err, req, res, next) => {
   res.status(500).send("Error interno del servidor");
-  logToFile(`Error inesperado: ${err.message}`);
 });
 
-app.listen(PORT, () => {
-  logToFile(`Servidor escuchando en el puert ${PORT} (${version})`);
+app.listen(PORT, async() => {
+  writeLog(`Servidor iniciado en el puerto ${PORT} (${version})`);
 });

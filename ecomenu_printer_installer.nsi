@@ -1,16 +1,14 @@
 !define APP_NAME "ecomenu-printer"
 !define EXE_NAME "ecomenu-printer.exe"
-!define WKHTMLTOPDF "wkhtmltopdf.exe"
 !define UNINSTALLER "uninstall-ecomenu-printer.exe"
 !define ICON_FILE "icon.ico"
 !define ICON_GRAY_SCALE_FILE "icon_gray_scale.ico" 
 !define INSTALL_DIR "$LOCALAPPDATA\ecomenu-printer"
-!define APP_VERSION "1.1.4"
+!define APP_VERSION "1.2.0"
 !define INSTALLER_NAME "setup-ecomenu-printer-v${APP_VERSION}.exe"
 !define WEB_URL "https://saas.ecomenuapp.com/"
 
 OutFile "${INSTALLER_NAME}"
-
 
 RequestExecutionLevel admin  ; Esto asegura que la instalación tenga privilegios elevados.
 
@@ -24,10 +22,8 @@ Section "Instalar"
     ; Crear directorio de instalación
     CreateDirectory "${INSTALL_DIR}"
 
-    ; Copiar archivo ejecutable, wkhtmltopdf y el archivo .bat
     SetOutPath "${INSTALL_DIR}"
     File "${EXE_NAME}"
-    File "${WKHTMLTOPDF}"
     File "${UNINSTALLER}"
     File "${ICON_FILE}"
     File "${ICON_GRAY_SCALE_FILE}"
