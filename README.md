@@ -1,6 +1,6 @@
 > [!WARNING]  
-> **DEPRECATED**. This repository is no longer maintained.  
-> Active development has moved to [this repo](https://github.com/dotH3/ecomenu-printer-rust), which is built with **Rust**.  
+> **REACTIVATED**. This repository is now maintained again.  
+> However, active development also continues in [this repo](https://github.com/dotH3/ecomenu-printer-rust), built with **Rust**.
 
 
 # ecomenu-printer
