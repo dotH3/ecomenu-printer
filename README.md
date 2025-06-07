@@ -1,19 +1,24 @@
+<p align="center">
+  <img src="https://saas.ecomenuapp.com/public/ecomenu-logo.jpg" width="200" alt="Ecomenu Logo" style="box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0.9; border-radius: 12px;" />
+</p>
+
+<h3 align="center">Ecomenu Printer</h3>
+<p align="center">Application to manage printers through HTTP requests. It’s designed specifically to be integrated with the software Ecomenu, allowing us to print in an efficient and scalable way.</p>
+
 > [!WARNING]  
 > **REACTIVATED**. This repository is now maintained again.  
-> However, active development also continues in [this repo](https://github.com/dotH3/ecomenu-printer-rust), built with **Rust**.
+> Active development also continues in [this repo](https://github.com/dotH3/ecomenu-printer-rust), built with **Rust**.
 
+## Features
 
-# ecomenu-printer
+- 🖨️ Management of local and network printers.
+- 🌐 HTTP API to manage print requests.
+- ⚡️ Fast and lightweight.
+- 🍔 Optimized for integration with **Ecomenu**.
 
-**ecomenu-printer** es una aplicación nativa desarrollada para manejar impresoras a través de solicitudes HTTP. Diseñada específicamente para integrarse con el SaaS **Ecomenu**, permite realizar impresiones de manera eficiente y escalable en entornos Windows.
+## Endpoints
 
-## Características
-
-- 🖨️ Manejo de impresoras locales y en red compatibles con Windows.
-- 🌐 API HTTP para gestionar solicitudes de impresión.
-- 🍔 Optimizado para integrarse con **Ecomenu** y operar en sistemas Windows.
-
-
-## Endpoint
-- **GET/printer-list** lista de impresoras configuradas en windows 
-- **POST/print** imprimir html (printerName, height, width, zoom).
+| Method |    Endpoint     |               Description                |  Required Form-Data   |
+| :----: | :-------------: | :--------------------------------------: | :-------------------: |
+|  GET   | `/printer-list` | Lists printers configured in the system. |         None          |
+|  POST  |    `/print`     |                Prints PDF                | `printer_name`, `pdf` |
