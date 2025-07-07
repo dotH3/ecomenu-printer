@@ -1,4 +1,4 @@
-const version = "v1.2.1";
+const version = "v1.2.2";
 const PORT = 3005;
 
 const express = require("express");
@@ -11,14 +11,18 @@ const fs = require("fs");
 const { getPrinterList } = require("./src/services/getPrinterList");
 const { postPrintFile } = require("./src/services/postPrintFile");
 
+const fileSize = 200 * 1024 * 1024; // 200 MB
+
 const multer = require("multer");
 const { writeLog } = require("./src/misc/writeLog");
 const uploadDir = path.join(os.homedir(), "Desktop", "ecomenu-printer");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+
+//? Eliminar la carpeta y su contenido si existe
+if (fs.existsSync(uploadDir)) {
+  fs.rmSync(uploadDir, { recursive: true, force: true });
 }
 const upload = multer({
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize },
   dest: path.join(os.homedir(), "Desktop", "ecomenu-printer"),
 });
 
